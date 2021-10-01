@@ -4,6 +4,7 @@ server:
 
 auth0:
   # Replace with the API Identifier for your Auth0 API.
+  # Take from Applications -> APIs -> {Your_Application} -> Settings -> Id
   audience: {API_IDENTIFIER}
 
 # The following is standard Spring Security OAuth2 configuration.
@@ -14,5 +15,6 @@ spring:
         jwt:
           # Replace with the domain of your Auth0 tenant.
           # Note the trailing slash is important!
+          # Take from Applications -> {Your_Application} -> Settings -> Domain
           issuer-uri: https://{DOMAIN}/
           

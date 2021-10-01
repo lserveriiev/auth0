@@ -19,16 +19,17 @@ This sample demonstrates:
 
 ### Create an Auth0 API
 
-In the [APIs](https://manage.auth0.com/dashboard/#/apis) section of the Auth0 dashboard, click Create API. Provide a name and an identifier for your API, for example, `https://quickstarts/api`. Leave the Signing Algorithm as RS256.
+In the [APIs (Applications -> Api)](https://manage.auth0.com/dashboard/#/apis) section of the Auth0 dashboard, click Create API. Provide a name and an identifier for your API, for example, `https://quickstarts/api`. Leave the Signing Algorithm as RS256.
 
 ### Configure the project
 
 The project needs to be configured with your Auth0 domain and API Identifier.
 
-To do this, first copy `src/main/resources/application.yml.example` into a new file in the same folder called `src/main/resources/application.yml`, and replace the values with your own Auth0 domain and API Identifier:
+To do this, first copy `src/main/resources/application.yml` into a new file in the same folder called `src/main/resources/application.yml`, and replace the values with your own Auth0 domain and API Identifier:
 
 ```yaml
 auth0:
+  # Take from Applications -> {Your_Application} -> Settings -> Domain
   audience: {API_IDENTIFIER}
 
 spring:
@@ -37,6 +38,7 @@ spring:
       resourceserver:
         jwt:
           # Note the trailing slash is important!
+          # Take from Applications -> {Your_Application} -> Settings -> Domain
           issuer-uri: https://{DOMAIN}/
 ```
 
@@ -56,32 +58,6 @@ Windows:
 gradlew.bat clean bootRun
 ```
 
-### Docker
-
-Linux / MacOS:
-```bash
-sh exec.sh
-```
-
-Windows:
-```
-./exec.ps1
-```
-
-## Running unit tests
-
-Linux / macOS:
-
-```bash
-./gradlew clean test
-```
-
-Windows:
-
-```bash
-gradlew.cmd clean test
-```
-
 ## Testing the secured APIs
 
 Using a REST client such as Postman or cURL, issue a `GET` request to `http://localhost:3010/api/public`. You should receive the response:
@@ -90,7 +66,7 @@ Using a REST client such as Postman or cURL, issue a `GET` request to `http://lo
 {"message":"All good. You DO NOT need to be authenticated to call /api/public."}
 ```
 
-Next, issue a `GET` request to `http://localhost:3010/api/private`. You should receive a `401 Unauthorized` response.
+Next, issue a request `curl -v http://localhost:3010/api/private`. You should receive a `401 Unauthorized` response.
 
 To test that your API is properly secured, you can obtain a test token in the Auth0 Dashboard:
 
@@ -98,7 +74,14 @@ To test that your API is properly secured, you can obtain a test token in the Au
 2. Ensure that your API test application is marked as authorized.
 3. Click the **Test** tab, then **COPY TOKEN**.
 
-Issue a `GET` request to the `/api/private` endpoint, this time passing the token you obtained above as an `Authorization` header set to `Bearer YOUR-API-TOKEN-HERE`. You should then see the response:
+Issue a `GET` request:
+```
+curl --request GET \
+  --url http://localhost:3010/api/private \
+  --header 'authorization: Bearer {TOKEN}'
+```
+
+The response should be:
 
 ```json
 {"message":"All good. You can see this because you are Authenticated."}
